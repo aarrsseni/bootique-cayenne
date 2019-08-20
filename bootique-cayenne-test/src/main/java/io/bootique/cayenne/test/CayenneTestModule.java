@@ -24,6 +24,8 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import io.bootique.cayenne.test.experiment.BQTestFactory;
+import io.bootique.cayenne.test.experiment.SchemaCreator;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.jdbc.test.runtime.DatabaseChannelFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -49,10 +51,10 @@ public class CayenneTestModule implements Module {
     @Override
     public void configure(Binder binder) {
         CayenneTestModule.extend(binder).initAllExtensions();
-        JdbcModule.extend(binder).addDataSourceListener(SchemaCreationListener.class);
-
+        JdbcModule.extend(binder).addDataSourceListener(SchemaCreator.class);
+        binder.bind(BQTestFactory.class).in(Singleton.class);
         // this will trigger eager Cayenne startup and subsequent schema loading in the test DB
-        binder.bind(SchemaLoader.class).asEagerSingleton();
+//        binder.bind(SchemaLoader.class).asEagerSingleton();
     }
 
     @Provides
@@ -66,6 +68,12 @@ public class CayenneTestModule implements Module {
     @Singleton
     SchemaCreationListener provideSchemaCreationListener(Set<SchemaListener> schemaListeners) {
         return new SchemaCreationListener(schemaListeners);
+    }
+
+    @Provides
+    @Singleton
+    SchemaCreator provideSchemaCreator(Set<SchemaListener> schemaListeners) {
+        return new SchemaCreator(schemaListeners);
     }
 
     static class SchemaLoader {
