@@ -51,8 +51,8 @@ public class CayenneTestModule implements Module {
     @Override
     public void configure(Binder binder) {
         CayenneTestModule.extend(binder).initAllExtensions();
-        JdbcModule.extend(binder).addDataSourceListener(SchemaCreator.class);
         binder.bind(BQTestFactory.class).in(Singleton.class);
+        binder.bind(SchemaCreator.class);
         // this will trigger eager Cayenne startup and subsequent schema loading in the test DB
 //        binder.bind(SchemaLoader.class).asEagerSingleton();
     }
@@ -68,12 +68,6 @@ public class CayenneTestModule implements Module {
     @Singleton
     SchemaCreationListener provideSchemaCreationListener(Set<SchemaListener> schemaListeners) {
         return new SchemaCreationListener(schemaListeners);
-    }
-
-    @Provides
-    @Singleton
-    SchemaCreator provideSchemaCreator(Set<SchemaListener> schemaListeners) {
-        return new SchemaCreator(schemaListeners);
     }
 
     static class SchemaLoader {

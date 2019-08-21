@@ -14,11 +14,18 @@
 # limitations under the License.
 
 jdbc:
-  ds:
-    url: jdbc:derby:target/derby/derby2;create=true
+  ds1:
+    url: jdbc:derby:target/derby/test1;create=true
     initialSize: 1
+#  ds2:
+#    url: jdbc:derby:target/derby/test2;create=true
+#    initialSize: 1
 
 cayenne:
-  datasource: ds
-  configs:
-    - cayenne-project2.xml
+  datasource: ds1
+  maps:
+    - location: classpath:datamap2.map.xml
+      name: map2
+#    - location: classpath:datamap1.map.xml
+#      name: map1
+#      datasource: ds2

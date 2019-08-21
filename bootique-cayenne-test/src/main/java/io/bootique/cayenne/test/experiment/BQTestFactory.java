@@ -1,13 +1,11 @@
 package io.bootique.cayenne.test.experiment;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import io.bootique.BQRuntime;
 import io.bootique.command.CommandOutcome;
 import io.bootique.test.junit.BQTestRuntimeBuilder;
-import org.apache.cayenne.configuration.server.ServerRuntime;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class BQTestFactory {
     private Collection<BQRuntime> runtimes;
