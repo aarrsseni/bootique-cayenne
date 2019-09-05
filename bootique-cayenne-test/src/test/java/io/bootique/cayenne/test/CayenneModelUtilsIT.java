@@ -19,12 +19,12 @@
 
 package io.bootique.cayenne.test;
 
-import io.bootique.BQRuntime;
+import io.bootique.cayenne.test.experiment.BQRuntimeExtension;
+import io.bootique.cayenne.test.experiment.BQRuntimeExtensionBuilder;
 import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.Table;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.List;
 
@@ -33,16 +33,15 @@ import static org.junit.Assert.assertNotNull;
 
 public class CayenneModelUtilsIT {
 
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory();
+    @RegisterExtension
+    static BQRuntimeExtension bqRuntimeExtension = new BQRuntimeExtensionBuilder()
+            .args("-c", "classpath:config1.yml")
+            .build();
 
     @Test
     public void testCreateTableModel() {
-        BQRuntime runtime = testFactory.app("-c", "classpath:config1.yml")
-                .autoLoadModules()
-                .createRuntime();
-
-        Table t1 = CayenneModelUtils.createTableModel(runtime, "db_entity");
+        Table t1 = CayenneModelUtils
+                .createTableModel(bqRuntimeExtension.getBqRuntime(), "db_entity");
 
         assertNotNull(t1);
 

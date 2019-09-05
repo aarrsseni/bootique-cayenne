@@ -5,6 +5,8 @@ import java.util.Map;
 
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.matcher.TableMatcher;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class TestDataManager {
 
@@ -23,7 +25,7 @@ public class TestDataManager {
         }
     }
 
-    public void beforeAll() {
+    public void before() {
         if (deleteData) {
             deleteData();
         }

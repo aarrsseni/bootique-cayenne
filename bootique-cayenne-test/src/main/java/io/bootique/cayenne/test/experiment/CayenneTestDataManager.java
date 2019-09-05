@@ -6,6 +6,7 @@ import io.bootique.jdbc.test.Table;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class CayenneTestDataManager extends TestDataManager {
 
@@ -47,8 +48,8 @@ public class CayenneTestDataManager extends TestDataManager {
     }
 
     @Override
-    public void beforeAll() {
-        super.beforeAll();
+    public void before() {
+        super.before();
         if (refreshCayenneCaches) {
             refreshCayenneCaches();
         }
@@ -104,5 +105,6 @@ public class CayenneTestDataManager extends TestDataManager {
             domain.getQueryCache().clear();
         }
     }
+
 
 }

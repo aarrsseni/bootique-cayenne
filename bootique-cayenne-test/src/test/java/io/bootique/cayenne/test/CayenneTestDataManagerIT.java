@@ -19,10 +19,7 @@
 
 package io.bootique.cayenne.test;
 
-import io.bootique.cayenne.test.experiment.BQRuntimeExtension;
-import io.bootique.cayenne.test.experiment.BQRuntimeExtensionBuilder;
-import io.bootique.cayenne.test.experiment.CayenneServerRuntimeExtension;
-import io.bootique.cayenne.test.experiment.CayenneServerRuntimeExtensionBuilder;
+import io.bootique.cayenne.test.experiment.*;
 import io.bootique.cayenne.test.experiment.CayenneTestDataManager;
 import io.bootique.cayenne.test.persistence.Table1;
 import io.bootique.cayenne.test.persistence.Table2;
@@ -42,15 +39,17 @@ public class CayenneTestDataManagerIT {
             .build();
 
     @RegisterExtension
-    static CayenneServerRuntimeExtension cayenneServerRuntimeExtension = new CayenneServerRuntimeExtensionBuilder()
-            .entities(Table1.class, Table2.class)
-            .build();
+    static DataManagerExtension dataManagerExtension = new DataManagerExtension()
+            .withEntities(Table1.class, Table2.class);
+
+    @RegisterExtension
+    static RefreshExtension refreshExtension = new RefreshExtension();
 
     private static CayenneTestDataManager dataManager;
 
     @BeforeAll
     public static void getDataManager() {
-        dataManager = cayenneServerRuntimeExtension.getCayenneTestDataManager();
+        dataManager = dataManagerExtension.getCayenneTestDataManager();
     }
 
     @Test

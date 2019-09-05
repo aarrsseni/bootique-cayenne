@@ -19,26 +19,28 @@
 
 package io.bootique.cayenne.test;
 
-import io.bootique.BQRuntime;
+import io.bootique.cayenne.test.experiment.BQRuntimeExtension;
+import io.bootique.cayenne.test.experiment.BQRuntimeExtensionBuilder;
+import io.bootique.cayenne.test.experiment.DataManagerExtension;
 import io.bootique.cayenne.test.persistence.Table1;
 import io.bootique.jdbc.test.Table;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class CayenneTestDataManagerTxIT {
 
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory();
+    @RegisterExtension
+    static BQRuntimeExtension bqRuntimeExtension = new BQRuntimeExtensionBuilder()
+            .args("-c", "classpath:config-noautocommit.yml")
+            .build();
+
+    @RegisterExtension
+    static DataManagerExtension dataManagerExtension = new DataManagerExtension();
 
     @Test
     public void testDataSourceDoesNotAutocommit() {
-
-        BQRuntime runtime = testFactory.app("-c", "classpath:config-noautocommit.yml")
-                .autoLoadModules()
-                .createRuntime();
-
-        CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
+        CayenneTestDataManager dataManager = CayenneTestDataManager
+                .builder(bqRuntimeExtension.getBqRuntime())
                 .doNotDeleteData()
                 .entities(Table1.class)
                 .build();
