@@ -9,7 +9,9 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public class Junit5Test {
 
     @RegisterExtension
-    static BQRuntimeExtension bqRuntimeExtension = new BQRuntimeExtension("classpath:config2.yml");
+    static BQRuntimeExtension bqRuntimeExtension = new BQRuntimeExtensionBuilder()
+            .args("-c", "classpath:config2.yml")
+            .build();
 
     @RegisterExtension
     static CayenneServerRuntimeExtension cayenneServerRuntimeExtension = new CayenneServerRuntimeExtension();

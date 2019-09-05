@@ -19,37 +19,43 @@
 
 package io.bootique.cayenne.test;
 
-import io.bootique.BQRuntime;
+import io.bootique.cayenne.test.experiment.BQRuntimeExtension;
+import io.bootique.cayenne.test.experiment.BQRuntimeExtensionBuilder;
+import io.bootique.cayenne.test.experiment.CayenneServerRuntimeExtension;
+import io.bootique.cayenne.test.experiment.CayenneServerRuntimeExtensionBuilder;
+import io.bootique.cayenne.test.experiment.CayenneTestDataManager;
 import io.bootique.cayenne.test.persistence.Table1;
 import io.bootique.cayenne.test.persistence.Table2;
 import io.bootique.jdbc.test.Table;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 public class CayenneTestDataManagerIT {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory();
-    private static BQRuntime TEST_RUNTIME;
+    @RegisterExtension
+    static BQRuntimeExtension bqRuntimeExtension = new BQRuntimeExtensionBuilder()
+            .args("-c", "classpath:config2.yml")
+            .build();
 
-    @Rule
-    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+    @RegisterExtension
+    static CayenneServerRuntimeExtension cayenneServerRuntimeExtension = new CayenneServerRuntimeExtensionBuilder()
             .entities(Table1.class, Table2.class)
             .build();
 
-    @BeforeClass
-    public static void beforeClass() {
-        TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:config2.yml")
-                .autoLoadModules()
-                .createRuntime();
+    private static CayenneTestDataManager dataManager;
+
+    @BeforeAll
+    public static void getDataManager() {
+        dataManager = cayenneServerRuntimeExtension.getCayenneTestDataManager();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNoSuchTable() {
-        dataManager.getTable(String.class);
+        assertThrows(IllegalArgumentException.class, () -> dataManager.getTable(String.class));
     }
 
     @Test

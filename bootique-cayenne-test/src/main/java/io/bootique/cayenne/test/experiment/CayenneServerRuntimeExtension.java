@@ -8,6 +8,11 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public class CayenneServerRuntimeExtension implements BeforeAllCallback {
 
     private CayenneTestDataManager cayenneTestDataManager;
+    private Class<?>[] entityTypes;
+
+    public CayenneServerRuntimeExtension(Class<?>... entityTypes) {
+        this.entityTypes = entityTypes;
+    }
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
@@ -20,7 +25,7 @@ public class CayenneServerRuntimeExtension implements BeforeAllCallback {
 
         cayenneTestDataManager =
                 new CayenneTestDataManagerBuilderExperiment(bqRuntime)
-                        .allEntities()
+                        .entities(entityTypes)
                         .build();
         cayenneTestDataManager.beforeAll();
     }
